@@ -56,4 +56,19 @@ public class JMemorizeWithShortcuts extends JFrame {
             }
         }
     }
+    // Action to navigate to the next flashcard
+    Action nextAction = new AbstractAction("Next Flashcard") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            nextFlashcard(); // Call the method to navigate to the next flashcard
+        }
+    };  // Ctrl + N to navigate to the next flashcard
+        textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK), "nextAction");
+        textArea.getActionMap().put("nextAction", nextAction);
+    // Method to navigate to the next flashcard
+    private void nextFlashcard() {
+        currentFlashcardIndex = (currentFlashcardIndex + 1) % flashcards.size();
+        textArea.setText("Front of the flashcard: " + flashcards.get(currentFlashcardIndex));
+        isFront = true;
+    }
 }
