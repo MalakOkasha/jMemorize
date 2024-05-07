@@ -71,4 +71,39 @@ public class JMemorizeWithShortcuts extends JFrame {
         textArea.setText("Front of the flashcard: " + flashcards.get(currentFlashcardIndex));
         isFront = true;
     }
+    // Action to navigate to the previous flashcard
+    Action prevAction = new AbstractAction("Previous Flashcard") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            prevFlashcard(); // Call the method to navigate to the previous flashcard
+        }
+    }; // Ctrl + P to navigate to the previous flashcard
+        textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK), "prevAction");
+        textArea.getActionMap().put("prevAction", prevAction);// Method to navigate to the previous flashcard
+    private void prevFlashcard() {
+        currentFlashcardIndex = (currentFlashcardIndex - 1 + flashcards.size()) % flashcards.size();
+        textArea.setText("Front of the flashcard: " + flashcards.get(currentFlashcardIndex));
+        isFront = true;
+    }
+    // Action to save flashcards
+    Action saveAction = new AbstractAction("Save Flashcards") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            saveFlashcards(); // Call the method to save flashcards
+        }
+    };  // Ctrl + S to save flashcards
+        textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "saveAction");
+        textArea.getActionMap().put("saveAction", saveAction);
+    // Method to save flashcards
+    private void saveFlashcards() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("flashcards.txt"))) {
+            for (String flashcard : flashcards) {
+                writer.println(flashcard);
+            }
+            textArea.append("Flashcards saved!\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
