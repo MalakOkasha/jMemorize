@@ -1,7 +1,7 @@
 /*
  * jMemorize - Learning made easy (and fun) - A Leitner flashcards tool
  * Copyright(C) 2004-2008 Riad Djemili and contributors
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 1, or (at your option)
@@ -28,11 +28,11 @@ import static jmemorize.core.Category.Events.EDITED_EVENT;
 
 /**
  * A flash card that has a front/flip side and can be learned.
- * 
+ *
  * @author djemili
  * @version $Id: Card.java 1048 2008-01-21 21:40:00Z djemili $
  */
-public class Card implements Cloneable {
+public class Card {
     public static final long    ONE_DAY     = 1000 * 60 * 60 * 24;
     public static final boolean CLONE_DATES = Main.isDevel();
 
@@ -42,7 +42,7 @@ public class Card implements Cloneable {
     // content
     private CardSide m_frontSide = new CardSide();
     private CardSide m_backSide  = new CardSide();
-    
+
     // dates
     private Date     m_dateTested;
     private Date     m_dateExpired;
@@ -63,12 +63,12 @@ public class Card implements Cloneable {
     {
         this(FormattedText.formatted(front), FormattedText.formatted(back));
     }
-    
-    public Card(FormattedText front, FormattedText back) 
+
+    public Card(FormattedText front, FormattedText back)
     {
         this(new Date(), front, back);
     }
-    
+
     /**
      * The card sides are given in a formatted state.
      */
@@ -76,12 +76,12 @@ public class Card implements Cloneable {
     {
         this(created, FormattedText.formatted(front), FormattedText.formatted(back));
     }
-    
+
     public Card(Date created, FormattedText front, FormattedText back)
     {
         this(created, new CardSide(front), new CardSide(back));
     }
-    
+
     public Card(Date created, CardSide frontSide, CardSide backSide)
     {
         m_dateCreated = cloneDate(created);
@@ -90,9 +90,10 @@ public class Card implements Cloneable {
 
         m_frontSide = frontSide;
         m_backSide = backSide;
-        
+
         attachCardSideObservers();
     }
+
     public Card(Card original) {
         this.m_category = null; // We don't want to clone the category
         this.m_level = original.m_level;
@@ -117,70 +118,70 @@ public class Card implements Cloneable {
 
     /**
      * The given card sides are assumend to be unformatted.
-     * 
+     *
      * @throws IllegalArgumentException If frontSide or backSide has no text.
      */
     public void setSides(String front, String back)
     {
         FormattedText frontSide = FormattedText.unformatted(front);
         FormattedText backSide = FormattedText.unformatted(back);
-        
+
         setSides(frontSide, backSide);
     }
-    
+
     /**
      * @throws IllegalArgumentException If front or back has no text.
      */
-    public void setSides(FormattedText front, FormattedText back) 
-        throws IllegalArgumentException
+    public void setSides(FormattedText front, FormattedText back)
+            throws IllegalArgumentException
     {
-        if (front.equals(m_frontSide.getText()) && 
-            back.equals(m_backSide.getText()))
+        if (front.equals(m_frontSide.getText()) &&
+                back.equals(m_backSide.getText()))
         {
             return;
         }
-        
+
         m_frontSide.setText(front);
         m_backSide.setText(back);
-        
+
         if (m_category != null)
         {
             m_dateModified = new Date();
             m_category.fireCardEvent(EDITED_EVENT, this, getCategory(), m_level);
         }
     }
-    
+
     /**
      * Get the number of times a specific card side was already learned in its
      * deck.
-     * 
+     *
      * @param frontside <code>true</code> if it should deliver the fronside
      * value, <code>false</code> if it should deliver the backside value.
-     * 
+     *
      * @return the amount of times that the specified side was learned in this
      * deck.
      */
     public int getLearnedAmount(boolean frontside)
     {
         // TODO move to CardSide class
-        
+
         return frontside ? m_frontHitsCorrect :  m_backHitsCorrect;
     }
 
     /**
      * Set the number of times a specific card side was already learned in its
      * deck.
-     * 
+     *
      * @param frontside <code>true</code> if it should deliver the fronside
      * value, <code>false</code> if it should deliver the backside value.
-     * 
+     *
      * @param amount the amount of times that the specified side was learned in
      * this deck.
      */
     public void setLearnedAmount(boolean frontside, int amount)
     {
 //      TODO move to CardSide class
-        
+
         if (frontside)
         {
             m_frontHitsCorrect = amount;
@@ -199,14 +200,14 @@ public class Card implements Cloneable {
     /**
      * Increment the number of times a specific card side was already learned in
      * its deck by one.
-     * 
+     *
      * @param frontside <code>true</code> if it should deliver the fronside
      * value, <code>false</code> if it should deliver the backside value.
      */
     public void incrementLearnedAmount(boolean frontside)
     {
 //      TODO move to CardSide class
-        
+
         setLearnedAmount(frontside, getLearnedAmount(frontside) + 1);
     }
 
@@ -229,7 +230,7 @@ public class Card implements Cloneable {
     {
         return m_backSide;
     }
-    
+
     /**
      * @return the date that this card appeared the last time in a test and was
      * either passed or failed (skip doesn't count).
@@ -271,12 +272,12 @@ public class Card implements Cloneable {
 
     public void setDateCreated(Date date)
     {
-        if (date == null) 
+        if (date == null)
             throw new NullPointerException();
-        
+
         m_dateCreated = cloneDate(date);
     }
-    
+
     /**
      * @return the modification date. Is never <code>null</code>.
      */
@@ -292,8 +293,8 @@ public class Card implements Cloneable {
     {
         if (date.before(m_dateCreated))
             throw new IllegalArgumentException(
-                "Modification date can't be before creation date.");
-        
+                    "Modification date can't be before creation date.");
+
         m_dateModified = date;
     }
 
@@ -347,7 +348,7 @@ public class Card implements Cloneable {
     {
         m_testsTotal = 0;
         m_testsHit = 0;
-        
+
         m_frontHitsCorrect = 0;
         m_backHitsCorrect = 0;
     }
@@ -365,20 +366,20 @@ public class Card implements Cloneable {
     /**
      * A card is expired when it was learned/repeated succesfully, but its learn
      * time has expired (is in the past from current perspective).
-     * 
+     *
      * @return True if the card has expired.
      */
     public boolean isExpired()
     {
         Date now = Main.getNow();
-        return m_dateExpired != null && 
-            (m_dateExpired.before(now) || m_dateExpired.equals(now));
+        return m_dateExpired != null &&
+                (m_dateExpired.before(now) || m_dateExpired.equals(now));
     }
 
     /**
-     * A card is learned when it was learned/repeated succesfully and its learn 
+     * A card is learned when it was learned/repeated succesfully and its learn
      * time hasnt expired.
-     * 
+     *
      * @return True if the card is learned.
      */
     public boolean isLearned()
@@ -389,7 +390,7 @@ public class Card implements Cloneable {
     /**
      * A card is unlearned when it wasnt succesfully repeated or never been l
      * earned at all.
-     * 
+     *
      * @return True if the card is unlearned.
      */
     public boolean isUnlearned()
@@ -440,7 +441,7 @@ public class Card implements Cloneable {
 
     /**
      * Clones the card without copying its user-dependent progress stats.
-     * 
+     *
      * This includes the following data: Fronside, Flipside, Creation date.
      * Setting the right category needs to be handled from the out side.
      */
@@ -458,7 +459,7 @@ public class Card implements Cloneable {
     {
         return "("+m_frontSide+"/"+m_backSide+")";
     }
-    
+
     private void attachCardSideObservers()
     {
         CardSideObserver observer = new CardSideObserver() {
@@ -477,7 +478,7 @@ public class Card implements Cloneable {
                 // TODO handle event notfying here
             }
         };
-        
+
         m_frontSide.addObserver(observer);
         m_backSide.addObserver(observer);
     }
@@ -492,7 +493,7 @@ public class Card implements Cloneable {
         {
             return date == null ? null : (Date)date.clone();
         }
-        
+
         return date;
     }
 }
