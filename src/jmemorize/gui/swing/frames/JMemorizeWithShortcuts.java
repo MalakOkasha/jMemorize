@@ -105,5 +105,73 @@ public class JMemorizeWithShortcuts extends JFrame {
             e.printStackTrace();
         }
     }
+    // Action to open flashcards
+    Action openAction = new AbstractAction("Open Flashcards") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            openFlashcards(); // Call the method to open flashcards
+        }
+    };  // Ctrl + O to open flashcards
+        textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK), "openAction");
+        textArea.getActionMap().put("openAction", openAction); // Method to open flashcards
+    private void openFlashcards() {
+        flashcards.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader("flashcards.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                flashcards.add(line);
+            }
+            textArea.append("Flashcards opened!\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // Action to edit the current flashcard
+    Action editAction = new AbstractAction("Edit Flashcard") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            editFlashcard(); // Call the method to edit the current flashcard
+        }
+    };
+
+    // Action to delete the current flashcard
+    Action deleteAction = new AbstractAction("Delete Flashcard") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            deleteFlashcard(); // Call the method to delete the current flashcard
+        }
+    };// Ctrl + E to edit the current flashcard
+        textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "editAction");
+        textArea.getActionMap().put("editAction", editAction);
+
+    // Ctrl + D to delete the current flashcard
+        textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "deleteAction");
+        textArea.getActionMap().put("deleteAction", deleteAction);
+
+    // Set up the frame
+    setLocationRelativeTo(null); // Set the frame location to the center of the screen
+    setVisible(true); // Make the frame visible   // Method to edit the current flashcard
+    private void editFlashcard() {
+        String editedText = JOptionPane.showInputDialog(this, "Enter new text for the flashcard:");
+        if (editedText != null) {
+            flashcards.set(currentFlashcardIndex, editedText);
+            textArea.setText("Front of the flashcard: " + flashcards.get(currentFlashcardIndex));
+            isFront = true;
+            textArea.append("Flashcard edited!\n");
+        }
+    }
+
+    // Method to delete the current flashcard
+    private void deleteFlashcard() {
+        flashcards.remove(currentFlashcardIndex);
+        if (flashcards.isEmpty()) {
+            textArea.setText("");
+        } else {
+            currentFlashcardIndex = Math.min(currentFlashcardIndex, flashcards.size() - 1);
+            textArea.setText("Front of the flashcard: " + flashcards.get(currentFlashcardIndex));
+            isFront = true;
+        }
+        textArea.append("Flashcard deleted!\n");
+    }
 
 }
