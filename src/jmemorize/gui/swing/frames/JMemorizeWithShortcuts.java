@@ -14,7 +14,7 @@ public class JMemorizeWithShortcuts extends JFrame {
     private JTextArea textArea; // Text area to display flashcards and user interactions
     private boolean isFront = true; // Tracks the current state of the flashcard (front or back)
     private List<String> flashcards; // Placeholder for flashcards
-    private int currentFlashcardIndex = 0; // Current flashcard index
+    private int currentFlashcardIndex = 0; // Current flashcard indexx
 
     public JMemorizeWithShortcuts() {
         setTitle("jMemorize with Keyboard Shortcuts"); // Set the title of the window
